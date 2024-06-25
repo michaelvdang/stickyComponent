@@ -10,10 +10,17 @@ export default function TabLayout() {
 
   return (
     <Tabs
+      initialRouteName='flatlist'
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
       }}>
+      <Tabs.Screen
+        name="flatlist"
+      />
+      <Tabs.Screen
+        name='fadableMenu'
+      />
       <Tabs.Screen
         name="index"
         options={{
@@ -30,6 +37,12 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="styles"
+        options={{
+          href: null,
         }}
       />
     </Tabs>

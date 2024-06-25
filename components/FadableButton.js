@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Entypo } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 
-export default AnimatedSlideButton = ({
+export default FadableButton = ({
 	menuItems, 
 	menuButtonStyle,
 	buttonSize = 50,

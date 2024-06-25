@@ -6,9 +6,10 @@
  */
 
 
-import { View, Text, ScrollView, FlatList } from 'react-native'
+import { View, Text, ScrollView, FlatList, StyleSheet } from 'react-native'
 import React, { forwardRef, useState } from 'react'
-import AnimatedSlideButton from './AnimatedSlideButton';
+import FadableButton from './FadableButton';
+import SlidingButton from './SlidingButton';
 
 export default FadableMenuList = forwardRef((
   {
@@ -83,8 +84,13 @@ export default FadableMenuList = forwardRef((
         onScrollEndDrag={() => {setScrollDragging(false);}}
       />
     )}
+
+    <SlidingButton
+      style={styles.container}
+      yOffset={yOffset}
+    />
     
-    <AnimatedSlideButton
+    <FadableButton
       menuItems={menuItems}
       menuButtonStyle={menuButtonStyle}
       buttonSize={buttonSize}
@@ -104,4 +110,14 @@ export default FadableMenuList = forwardRef((
   )
 })
 
+const styles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    top: 50,
+    left: 0,
+    width: '100%',
+    height: 50,
+    backgroundColor: 'red',
+  }
+})
 // export default FadableMenuList // with forwardRef, must export during declaration, not after

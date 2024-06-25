@@ -8,6 +8,7 @@ const fadableMenu = () => {
   const groupSize = 10;
 
   const renderItem = ({item, index}) => {
+    // if (false) {
     if (index % (groupSize + 1) === 0) {
       return (
         <View 
@@ -51,11 +52,25 @@ const fadableMenu = () => {
   });
   console.log('dataWithHeaders: ', dataWithHeaders);
   
+  const listHeader = () => (
+    <View
+      style={{
+        backgroundColor: 'yellow',
+        height: 100,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Text>List Header</Text>
+    </View>
+  )
+  
   return (
     <FadableMenuList
       ItemSeparatorComponent={<View style={{height: 1, backgroundColor: 'black',}} />}
       data={dataWithHeaders}
       renderItem={renderItem}
+      // ListHeaderComponent={listHeader}
       menuItems={[
         {
           component: () => (<Text>Menu 1</Text>),

@@ -13,9 +13,11 @@ import AnimatedSlideButton from './AnimatedSlideButton';
 export default FadableMenuList = forwardRef((
   {
     children,     // will render as ScrollView
-    data,         // will render as FlatList
-    renderItem,   // will render as FlatList
-    keyboardShouldPersistTaps,
+    // data,         // will render as FlatList
+    // renderItem,   // will render as FlatList
+    // keyboardShouldPersistTaps,
+    // ItemSeparatorComponent,
+    // stickyHeaderIndices,
     menuItems,
     menuButtonStyle,
     buttonSize,
@@ -25,8 +27,8 @@ export default FadableMenuList = forwardRef((
     maximumTranslation,
     snapToThreshold,
     bottomOffset,
-    ItemSeparatorComponent,
     disableSliding = false,
+    ...props
   }, 
     ref
   ) => {
@@ -36,6 +38,7 @@ export default FadableMenuList = forwardRef((
   const [scrollMomentum, setScrollMomentum] = useState(false);
   const [scrollDragging, setScrollDragging] = useState(false);
 
+  // console.log('props: ', props)
 
   // verify either children or data is present
 
@@ -60,10 +63,12 @@ export default FadableMenuList = forwardRef((
     ) : (
       <FlatList
         ref={ref}
-        renderItem={renderItem} 
-        data={data}
-        keyboardShouldPersistTaps={keyboardShouldPersistTaps}
-        ItemSeparatorComponent={ItemSeparatorComponent}
+        {...props}
+        // stickyHeaderIndices={stickyHeaderIndices}
+        // renderItem={renderItem} 
+        // data={data}
+        // keyboardShouldPersistTaps={keyboardShouldPersistTaps}
+        // ItemSeparatorComponent={ItemSeparatorComponent}
         // keyExtractor={(item, index) => index.toString()}
         onScroll={({nativeEvent: e}) => {
           if (disableSliding) 

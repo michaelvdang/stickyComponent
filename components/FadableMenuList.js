@@ -6,8 +6,9 @@
  */
 
 
-import { View, Text, ScrollView, FlatList, StyleSheet } from 'react-native'
+import { Animated, View, Text, ScrollView, FlatList, StyleSheet } from 'react-native'
 import React, { forwardRef, useState } from 'react'
+import { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated';
 import FadableButton from './FadableButton';
 import SlidingButton from './SlidingButton';
 
@@ -33,11 +34,19 @@ export default FadableMenuList = forwardRef((
   }, 
     ref
   ) => {
-  const [yOffset, setYOffset] = useState(0);
+  const yOffset = useSharedValue(0);
+  // const [yOffset, setYOffset] = useState(0);
   const [contentHeight, setContentHeight] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(0);
   const [scrollMomentum, setScrollMomentum] = useState(false);
   const [scrollDragging, setScrollDragging] = useState(false);
+
+  const scrollHandler = useAnimatedScrollHandler((event) => {
+    console.log('event: ', event);
+    yOffset.value = event.contentOffset.y;
+    setContentHeight(event.contentSize.height);
+    setViewportHeight(event.layoutMeasurement.height);
+  })
 
   // console.log('props: ', props)
 
@@ -50,7 +59,8 @@ export default FadableMenuList = forwardRef((
         ref={ref}
         // keyExtractor={(item, index) => index.toString()}
         onScroll={({nativeEvent: e}) => {
-          setYOffset(e.contentOffset.y);
+          yOffset.value = e.contentOffset.y;
+          // setYOffset(e.contentOffset.y);
           setContentHeight(e.contentSize.height);
           setViewportHeight(e.layoutMeasurement.height);
         }}
@@ -62,7 +72,7 @@ export default FadableMenuList = forwardRef((
         {children}
       </ScrollView>
     ) : (
-      <FlatList
+      <Animated.FlatList
         ref={ref}
         {...props}
         // stickyHeaderIndices={stickyHeaderIndices}
@@ -71,13 +81,14 @@ export default FadableMenuList = forwardRef((
         // keyboardShouldPersistTaps={keyboardShouldPersistTaps}
         // ItemSeparatorComponent={ItemSeparatorComponent}
         // keyExtractor={(item, index) => index.toString()}
-        onScroll={({nativeEvent: e}) => {
-          if (disableSliding) 
-            return;
-          setYOffset(e.contentOffset.y);
-          setContentHeight(e.contentSize.height);
-          setViewportHeight(e.layoutMeasurement.height);
-        }}
+        onScroll={scrollHandler}
+        // onScroll={({nativeEvent: e}) => {
+        //   if (disableSliding) 
+        //     return;
+        //   setYOffset(e.contentOffset.y);
+        //   setContentHeight(e.contentSize.height);
+        //   setViewportHeight(e.layoutMeasurement.height);
+        // }}
         onMomentumScrollBegin={() => {setScrollMomentum(true);}}
         onMomentumScrollEnd={() => {setScrollMomentum(false);}}
         onScrollBeginDrag={() => {setScrollDragging(true);}}

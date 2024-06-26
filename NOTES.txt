@@ -1,1 +1,84 @@
 - look at CustomFlatList and useCustomFlatList hook to see how scrollY is used.
+
+cgpt example of declarative binding for flatlist scroll: 
+
+
+import React from 'react';
+import { FlatList, SafeAreaView, Text, View, StyleSheet } from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+} from 'react-native-reanimated';
+const DATA = Array.from({ length: 30 }, (_, index) => `Item ${index + 1}`);
+
+const AnimatedFlatListExample = () => {
+  const yOffset = useSharedValue(0);
+
+  const scrollHandler = useAnimatedScrollHandler((event) => {
+    yOffset.value = event.contentOffset.y;
+  });
+
+  const headerStyle = useAnimatedStyle(() => {
+    return {
+      height: 150 - yOffset.value,
+      opacity: 1 - yOffset.value / 50,
+    };
+  });
+
+  const renderItem = ({ item }) => (
+    <View style={styles.item}>
+      <Text style={styles.itemText}>{item}</Text>
+    </View>
+  );
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <Animated.View style={[styles.header, headerStyle]}>
+        <Text style={styles.headerText}>Animated Header</Text>
+      </Animated.View>
+
+      <Animated.FlatList
+        data={DATA}
+        renderItem={renderItem}
+        keyExtractor={(item) => item}
+        contentContainerStyle={styles.listContent}
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
+      />
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'tomato',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  headerText: {
+    fontSize: 24,
+    color: 'white',
+  },
+  listContent: {
+    paddingTop: 160,
+  },
+  item: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  itemText: {
+    fontSize: 18,
+  },
+});
+
+export default AnimatedFlatListExample;

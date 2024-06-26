@@ -1,5 +1,5 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
-import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSpring } from 'react-native-reanimated';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSpring, interpolate, Extrapolation } from 'react-native-reanimated';
 import { useEffect, useState } from "react";
 import { Entypo } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
@@ -40,26 +40,33 @@ export default FadableButton = ({
 		// console.log('prevYOffset, yOffset: ', prevYOffset, yOffset);
 		let currentTranslationY = translationY.value;
 		// clamp menu button translation to 0 and bottomOffset
-		if (yOffset > 0 && yOffset < maxYOffset) {
-			currentTranslationY += (yOffset - prevYOffset) / 8;
-			currentTranslationY = clamp(currentTranslationY, minimumTranslation, maximumTranslation);
+		// if (yOffset > 0 && yOffset < maxYOffset) {
+			currentTranslationY += (yOffset.value - prevYOffset) / 8;
+			// currentTranslationY = clamp(currentTranslationY, minimumTranslation, maximumTranslation);
 			translationY.value = currentTranslationY;
-			opacity.value = 1 - (currentTranslationY / maximumTranslation);
+			// opacity.value = interpolate(
+			// 	translationY.value,
+			// 	[minimumTranslation, maximumTranslation],
+			// 	[1, 0],
+			// 	Extrapolation.CLAMP
+			// )
+			// opacity.value = 1 - (currentTranslationY / maximumTranslation);
 			// console.log('opacity: ', (maximumTranslation - currentTranslationY) / maximumTranslation)
 			// close menu when scrolling
 			closeMenu();
-		}
-		else if (yOffset === 0) {		// move menu to default position at top
+		// }
+		if (yOffset.value === 0) {
+		// else if (yOffset === 0) {		// move menu to default position at top
 			// console.log('show 0')
 			showMenuOpener();
 			closeMenu();
 		}
-		else if (yOffset > maxYOffset - 10) {	// hide menu at bottom
+		else if (yOffset.value > maxYOffset - 10) {	// hide menu at bottom
 			hideMenuOpener();
 			closeMenu();
 		}
 		
-		setPrevYOffset(yOffset);
+		setPrevYOffset(yOffset.value);
 	}, [yOffset])
 
 	useEffect(() => {
@@ -79,13 +86,13 @@ export default FadableButton = ({
 		// console.log('scrollMomentum: ', scrollMomentum);
 		// console.log('translationY: ', translationY.value);
 		if (!scrollMomentum) {	// scroll momentum animation has stopped (user has stopped scrolling)
-			if (yOffset >= maxYOffset && maxYOffset > 10) {	// close menu if at bottom
+			if (yOffset.value >= maxYOffset && maxYOffset > 10) {	// close menu if at bottom
 				// console.log('hide 1');
 				hideMenuOpener();
 			}
 			else {
 				// open menu if almost half way up
-				if (translationY.value < SNAP_ACTION_THRESHOLD || yOffset === 0) {
+				if (translationY.value < SNAP_ACTION_THRESHOLD || yOffset.value === 0) {
 					// console.log('show 2');
 					showMenuOpener();
 				}
@@ -100,9 +107,21 @@ export default FadableButton = ({
 	const animatedStyle = useAnimatedStyle(() => {
 		return {
 			transform: [{ 
-				translateY: translationY.value
+				translateY: interpolate(
+					translationY.value,
+					[defaultTranslation, maximumTranslation],
+					[defaultTranslation, maximumTranslation],
+					Extrapolation.EXTEND,
+				)
+				// translateY: translationY.value
 			 }],
-			opacity: opacity.value
+			 opacity: interpolate(
+				translationY.value,
+				[-20, defaultTranslation, maximumTranslation],
+				[0.5, 1, 0],
+				Extrapolation.CLAMP
+			 )
+			// opacity: opacity.value
 		}
 	})
 
@@ -135,7 +154,7 @@ export default FadableButton = ({
 	const hideMenuOpener = () => {
 		translationY.value = withSpring(HIDE_MENU_OPENER_TRANSLATE_Y, { duration: 1000 });
 		// opacity.value = 0;
-		opacity.value = withSpring(0, { duration: 200 });
+		opacity.value = withSpring(0, { duration: 500 });
 	}
 	
 	const timingConfig = { duration: OPEN_CLOSE_MENU_ANIMATION_TIMING };

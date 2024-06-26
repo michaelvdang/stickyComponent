@@ -34,8 +34,8 @@ export default FadableMenuList = forwardRef((
   }, 
     ref
   ) => {
-  const yOffset = useSharedValue(0);
-  // const [yOffset, setYOffset] = useState(0);
+  // const yOffset = useSharedValue(0);
+  const [yOffset, setYOffset] = useState(0);
   const [contentHeight, setContentHeight] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(0);
   const [scrollMomentum, setScrollMomentum] = useState(false);
@@ -81,14 +81,13 @@ export default FadableMenuList = forwardRef((
         // keyboardShouldPersistTaps={keyboardShouldPersistTaps}
         // ItemSeparatorComponent={ItemSeparatorComponent}
         // keyExtractor={(item, index) => index.toString()}
-        onScroll={scrollHandler}
-        // onScroll={({nativeEvent: e}) => {
-        //   if (disableSliding) 
-        //     return;
-        //   setYOffset(e.contentOffset.y);
-        //   setContentHeight(e.contentSize.height);
-        //   setViewportHeight(e.layoutMeasurement.height);
-        // }}
+        onScroll={({nativeEvent: e}) => {
+          if (disableSliding) 
+            return;
+          setYOffset(e.contentOffset.y);
+          setContentHeight(e.contentSize.height);
+          setViewportHeight(e.layoutMeasurement.height);
+        }}
         onMomentumScrollBegin={() => {setScrollMomentum(true);}}
         onMomentumScrollEnd={() => {setScrollMomentum(false);}}
         onScrollBeginDrag={() => {setScrollDragging(true);}}

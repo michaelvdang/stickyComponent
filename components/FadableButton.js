@@ -41,7 +41,7 @@ export default FadableButton = ({
 		let currentTranslationY = translationY.value;
 		// clamp menu button translation to 0 and bottomOffset
 		// if (yOffset > 0 && yOffset < maxYOffset) {
-			currentTranslationY += (yOffset.value - prevYOffset) / 8;
+			currentTranslationY += (yOffset - prevYOffset) / 8;
 			// currentTranslationY = clamp(currentTranslationY, minimumTranslation, maximumTranslation);
 			translationY.value = currentTranslationY;
 			// opacity.value = interpolate(
@@ -55,18 +55,18 @@ export default FadableButton = ({
 			// close menu when scrolling
 			closeMenu();
 		// }
-		if (yOffset.value === 0) {
+		if (yOffset === 0) {
 		// else if (yOffset === 0) {		// move menu to default position at top
 			// console.log('show 0')
 			showMenuOpener();
 			closeMenu();
 		}
-		else if (yOffset.value > maxYOffset - 10) {	// hide menu at bottom
+		else if (yOffset > maxYOffset - 10) {	// hide menu at bottom
 			hideMenuOpener();
 			closeMenu();
 		}
 		
-		setPrevYOffset(yOffset.value);
+		setPrevYOffset(yOffset);
 	}, [yOffset])
 
 	useEffect(() => {
@@ -86,13 +86,13 @@ export default FadableButton = ({
 		// console.log('scrollMomentum: ', scrollMomentum);
 		// console.log('translationY: ', translationY.value);
 		if (!scrollMomentum) {	// scroll momentum animation has stopped (user has stopped scrolling)
-			if (yOffset.value >= maxYOffset && maxYOffset > 10) {	// close menu if at bottom
+			if (yOffset >= maxYOffset && maxYOffset > 10) {	// close menu if at bottom
 				// console.log('hide 1');
 				hideMenuOpener();
 			}
 			else {
 				// open menu if almost half way up
-				if (translationY.value < SNAP_ACTION_THRESHOLD || yOffset.value === 0) {
+				if (translationY.value < SNAP_ACTION_THRESHOLD || yOffset === 0) {
 					// console.log('show 2');
 					showMenuOpener();
 				}

@@ -31,6 +31,8 @@ export const useCustomFlatList = (): TUseCustomFlatList => {
     sticky: 0,
     topList: 0
   });
+  console.log('window', window);
+  console.log('heights', heights);
 
   const styles: ICustomFlatListStyles = {
     header: {
@@ -44,8 +46,8 @@ export const useCustomFlatList = (): TUseCustomFlatList => {
           translateY: scrollY.interpolate({
             // <-- To move an element according to the scroll position
             extrapolate: "clamp",
-            inputRange: [-window.height, heights.header],
-            outputRange: [window.height, -heights.header]
+            inputRange: [-window.height, (heights.header)], // [-852, 106]
+            outputRange: [window.height, -(heights.header)] // [852, -106]
           })
         }
       ],

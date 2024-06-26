@@ -68,6 +68,9 @@ function CustomFlatList<T>({
           props.ListHeaderComponentStyle,
           styles.header
         ]}
+        // onScroll={(event) => {
+        //   console.log("event: ", event.nativeEvent.contentOffset.y);
+        // }}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           {

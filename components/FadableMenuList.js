@@ -96,7 +96,7 @@ export default FadableMenuList = forwardRef((
     )}
 
     <SlidingButton
-      style={styles.container}
+      // style={styles.container}
       yOffset={yOffset}
     />
     
